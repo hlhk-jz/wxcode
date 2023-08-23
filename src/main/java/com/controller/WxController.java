@@ -3,6 +3,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.pojo.Rep;
 import com.pojo.RepData;
 import com.pojo.Sell;
 import com.pojo.UserData;
@@ -17,45 +18,26 @@ import java.util.List;
 @RestController
 @Slf4j
 public class WxController {
-    public static List<Integer> list = new ArrayList<>();
-    static {
-        list.add(2);
-        list.add(2);
-        list.add(2);
-        list.add(2);
-        list.add(2);
-        list.add(2);
-        list.add(2);
-        list.add(2);
-        list.add(2);
-        list.add(2);
-        list.add(2);
-        list.add(2);
 
-        list.add(3);
-        list.add(3);
-        list.add(3);
-        list.add(3);
-        list.add(3);
-        list.add(3);
-
-        list.add(4);
-        list.add(4);
-        list.add(4);
-        list.add(4);
-        list.add(4);
-        list.add(4);
-        list.add(4);
-
-        list.add(5);
-        list.add(5);
-    }
-
-    public static int num = 0;
-    @GetMapping("/wuxing/test")
-    public Integer get(){
-        int c = RandomUtil.randomEle(list);
-        num ++;
+    @PostMapping("/wuxing/count")
+    public Integer post(@RequestBody JSONObject jsonObject){
+        String userName = jsonObject.get("userName").toString();
+        String page = jsonObject.get("page").toString();
+        String str = redisTemplate.opsForValue().get(WX_COUNT + userName);
+        UserData userData = JSONObject.parseObject(str, UserData.class);
+        switch (page){
+            case "1":
+                userData.setNum(Long.valueOf(userData.getNum())-2000000L +"");
+                break;
+            case "2":
+                userData.setNum(Long.valueOf(userData.getNum())-20000000L +"");
+                break;
+            case "3":
+                userData.setNum(Long.valueOf(userData.getNum())-100000000L +"");
+                break;
+        }
+        redisTemplate.opsForValue().set(WX_COUNT+userName, JSON.toJSONString(userData));
+        int c = RandomUtil.randomEle(Rep.list);
         log.info("随机数:{}",c);
         return c;
     }
@@ -164,6 +146,28 @@ public class WxController {
         userData = Sell.sellNum(type,sellNum,userData);
         redisTemplate.opsForValue().set(WX_COUNT+user,JSON.toJSONString(userData) );
         return RepData.success(str);
+    }
+
+    @PostMapping("/wuxing/hulu")
+    public RepData lulu(@RequestBody JSONObject jsonObject){
+        String user = jsonObject.get("userName").toString();
+        //类型1
+        String atype = jsonObject.get("aType").toString();
+        //类型2
+        String btype = jsonObject.get("bType").toString();
+
+        if(atype.equals("1")){
+            //da hu lu
+            boolean c = RandomUtil.randomEle(Rep.dhlList);
+            if(!c){
+                return RepData.erro("空");
+            }else {
+                Integer b  = RandomUtil.randomEle(Rep.jinList);
+                 //更新缓存
+                return RepData.success("dabaihulu3ge"+b+"个");
+            }
+        }
+        return RepData.success("buda1ge");
     }
 
 }

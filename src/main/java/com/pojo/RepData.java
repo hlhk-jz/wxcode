@@ -21,6 +21,9 @@ public class RepData<T> {
     public static RepData success(Object t){
         return new RepData(Rep.SUCCES_CODE, Rep.SUCCES_MSG, t);
     }
+    public static RepData success(String msg){
+        return new RepData(Rep.SUCCES_CODE, msg, null);
+    }
     public static RepData erro(String msg){
         return new RepData(Rep.ERRO_CODE, msg);
     }
