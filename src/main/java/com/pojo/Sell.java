@@ -81,22 +81,22 @@ public class Sell {
                 userData.setZjNum(Integer.parseInt(userData.getZjNum())-num+"");
                 break;
             case "9":
-                userData.setFp1NUm(Integer.parseInt(userData.getFp1NUm())-num+"");
-                break;
-            case "8":
-                userData.setFp2Num(Integer.parseInt(userData.getFp2Num())-num+"");
-                break;
-            case "7":
-                userData.setFp3Num(Integer.parseInt(userData.getFp3Num())-num+"");
-                break;
-            case "6":
                 userData.setJfzNum(Integer.parseInt(userData.getJfzNum())-num+"");
                 break;
-            case "5":
+            case "8":
                 userData.setBfzNum(Integer.parseInt(userData.getBfzNum())-num+"");
                 break;
-            case "4":
+            case "7":
                 userData.setCfzNum(Integer.parseInt(userData.getCfzNum())-num+"");
+                break;
+            case "6":
+                userData.setFp1NUm(Integer.parseInt(userData.getFp1NUm())-num+"");
+                break;
+            case "5":
+                userData.setFp2Num(Integer.parseInt(userData.getFp2Num())-num+"");
+                break;
+            case "4":
+                userData.setFp3Num(Integer.parseInt(userData.getFp3Num())-num+"");
                 break;
             case "3":
                 userData.setHzzNum(Integer.parseInt(userData.getHzzNum())-num+"");
