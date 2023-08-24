@@ -136,7 +136,7 @@ public class WxController {
         String user = jsonObject.get("userName").toString();
         //类型
         String type = jsonObject.get("type").toString();
-        //次数
+        //数量次数
         int sellNum = Integer.parseInt(jsonObject.get("sellNum").toString());
         String str = Sell.sellNum(type, sellNum);
         //更新缓存
@@ -144,7 +144,7 @@ public class WxController {
         UserData userData = JSONObject.parseObject(strData, UserData.class);
         userData.setNum(Long.valueOf(userData.getNum())+Long.valueOf(str)+"");
         userData = Sell.sellNum(type,sellNum,userData);
-        redisTemplate.opsForValue().set(WX_COUNT+user,JSON.toJSONString(userData) );
+        redisTemplate.opsForValue().set(WX_COUNT+user,JSON.toJSONString(userData));
         return RepData.success(str);
     }
 
@@ -164,10 +164,56 @@ public class WxController {
             }else {
                 Integer b  = RandomUtil.randomEle(Rep.jinList);
                  //更新缓存
+                updateRedis(user,btype,b);
                 return RepData.success("dabaihulu3ge"+b+"个");
             }
         }
+        updateRedis(user,btype,1);
         return RepData.success("buda1ge");
+    }
+
+    public void updateRedis(String user,String type,Integer num){
+        String str = redisTemplate.opsForValue().get(WX_COUNT + user);
+        UserData userData = JSONObject.parseObject(str, UserData.class);
+        switch (type){
+            case "12":
+                userData.setZdjNum(Integer.parseInt(userData.getZdjNum())+num+"");
+                break;
+            case "11":
+                userData.setZdNum(Integer.parseInt(userData.getZdNum())+num+"");
+                break;
+            case "10":
+                userData.setZjNum(Integer.parseInt(userData.getZjNum())+num+"");
+                break;
+            case "9":
+                userData.setJfzNum(Integer.parseInt(userData.getJfzNum())+num+"");
+                break;
+            case "8":
+                userData.setBfzNum(Integer.parseInt(userData.getBfzNum())+num+"");
+                break;
+            case "7":
+                userData.setCfzNum(Integer.parseInt(userData.getCfzNum())+num+"");
+                break;
+            case "6":
+                userData.setFp1NUm(Integer.parseInt(userData.getFp1NUm())+num+"");
+                break;
+            case "5":
+                userData.setFp2Num(Integer.parseInt(userData.getFp2Num())+num+"");
+                break;
+            case "4":
+                userData.setFp3Num(Integer.parseInt(userData.getFp3Num())+num+"");
+                break;
+            case "3":
+                userData.setHzzNum(Integer.parseInt(userData.getHzzNum())+num+"");
+                break;
+            case "2":
+                userData.setYzzNum(Integer.parseInt(userData.getYzzNum())+num+"");
+                break;
+            case "1":
+                userData.setBzzNum(Integer.parseInt(userData.getBzzNum())+num+"");
+                break;
+        }
+        redisTemplate.opsForValue().set(WX_COUNT+user,JSON.toJSONString(userData));
     }
 
 }
