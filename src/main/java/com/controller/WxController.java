@@ -14,6 +14,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @Slf4j
@@ -52,13 +55,16 @@ public class WxController {
         String userName = jsonObject.get("userName").toString();
         String passWord = jsonObject.get("passWord").toString();
         if(!StringUtils.isEmpty(strList)){
-            List<UserData> userData = JSONArray.parseArray(strList, UserData.class);
-            userData.stream().forEach(po->{
+            List<UserData> userDatas = JSONArray.parseArray(strList, UserData.class);
+            for (UserData po : userDatas){
                 if(po.getUserName().equals(userName) && po.getPassWord().equals(passWord)){
-                    jsonObject.put("token",userName);
+                    String token = userName+"-"+ UUID.randomUUID().toString().replace("-","" );
+                    redisTemplate.opsForValue().set(Rep.TOKEN+ userName, token,30 , TimeUnit.MINUTES);
+                    jsonObject.put("token",token);
                     jsonObject.put("code",200 );
+                    return jsonObject;
                 }
-            });
+            }
         }
         return jsonObject;
     }
