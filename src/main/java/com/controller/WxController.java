@@ -166,60 +166,74 @@ public class WxController {
             //da hu lu
             boolean c = RandomUtil.randomEle(Rep.dhlList);
             if(!c){
-                return RepData.erro("空");
+                return RepData.erro("你打开了葫芦，什么也没得到");
             }else {
                 Integer b  = RandomUtil.randomEle(Rep.jinList);
                  //更新缓存
-                updateRedis(user,btype,b);
-                return RepData.success("dabaihulu3ge"+b+"个");
+                String typeMsg = updateRedis(user,btype,b);
+                return RepData.success("你从葫芦中得到了"+b+"个"+typeMsg);
             }
         }
-        updateRedis(user,btype,1);
-        return RepData.success("buda1ge");
+        String typeMsg = updateRedis(user,btype,1);
+        return RepData.success("你从葫芦中得到了"+1+"个"+typeMsg);
     }
 
-    public void updateRedis(String user,String type,Integer num){
+    public String updateRedis(String user,String type,Integer num){
         String str = redisTemplate.opsForValue().get(WX_COUNT + user);
         UserData userData = JSONObject.parseObject(str, UserData.class);
+        String msg = "";
         switch (type){
             case "12":
                 userData.setZdjNum(Integer.parseInt(userData.getZdjNum())+num+"");
+                msg = "紫帝晶";
                 break;
             case "11":
                 userData.setZdNum(Integer.parseInt(userData.getZdNum())+num+"");
+                msg = "紫帝";
                 break;
             case "10":
                 userData.setZjNum(Integer.parseInt(userData.getZjNum())+num+"");
+                msg = "紫晶";
                 break;
             case "9":
                 userData.setJfzNum(Integer.parseInt(userData.getJfzNum())+num+"");
+                msg = "金凤樽";
                 break;
             case "8":
                 userData.setBfzNum(Integer.parseInt(userData.getBfzNum())+num+"");
+                msg = "云凤樽";
                 break;
             case "7":
                 userData.setCfzNum(Integer.parseInt(userData.getCfzNum())+num+"");
+                msg = "白凤樽";
                 break;
             case "6":
                 userData.setFp1NUm(Integer.parseInt(userData.getFp1NUm())+num+"");
+                msg = "云盘";
                 break;
             case "5":
                 userData.setFp2Num(Integer.parseInt(userData.getFp2Num())+num+"");
+                msg = "玉盘";
                 break;
             case "4":
                 userData.setFp3Num(Integer.parseInt(userData.getFp3Num())+num+"");
+                msg = "白盘";
                 break;
             case "3":
                 userData.setHzzNum(Integer.parseInt(userData.getHzzNum())+num+"");
+                msg = "虹珍珠";
                 break;
             case "2":
                 userData.setYzzNum(Integer.parseInt(userData.getYzzNum())+num+"");
+                msg = "云珍珠";
                 break;
             case "1":
                 userData.setBzzNum(Integer.parseInt(userData.getBzzNum())+num+"");
+                msg = "白珍珠";
                 break;
         }
         redisTemplate.opsForValue().set(WX_COUNT+user,JSON.toJSONString(userData));
+        return msg;
     }
 
 }
