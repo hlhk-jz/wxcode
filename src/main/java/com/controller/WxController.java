@@ -59,7 +59,7 @@ public class WxController {
             for (UserData po : userDatas){
                 if(po.getUserName().equals(userName) && po.getPassWord().equals(passWord)){
                     String token = userName+"-"+ UUID.randomUUID().toString().replace("-","" );
-                    redisTemplate.opsForValue().set(Rep.TOKEN+ userName, token,30 , TimeUnit.MINUTES);
+                    redisTemplate.opsForValue().set(Rep.TOKEN+ userName, token,180 , TimeUnit.MINUTES);
                     jsonObject.put("token",token);
                     jsonObject.put("code",200 );
                     return jsonObject;

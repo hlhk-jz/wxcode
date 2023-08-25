@@ -6,7 +6,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 public class MyInterceptor implements HandlerInterceptor {
     private final StringRedisTemplate redisTemplate;
     public MyInterceptor(StringRedisTemplate redisTemplate) {
@@ -17,12 +16,11 @@ public class MyInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 在请求处理之前调用，返回true继续执行后续拦截器和请求处理，返回false则不会继续执行
         String headerToken = request.getHeader("token");
-        System.out.println("请求头的值：" + headerToken);
         if(!StringUtils.isEmpty(headerToken)){
             String userName = headerToken.split("-")[0];
             String token = redisTemplate.opsForValue().get(Rep.TOKEN + userName);
             if(!headerToken.equals(token)){
-                System.out.println("错误token!!!!!!!!!");
+                response.setStatus(507);
                 return false;
             }
         }
